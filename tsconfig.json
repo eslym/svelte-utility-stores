@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "moduleResolution": "Node",
+        "verbatimModuleSyntax": true,
+        "strict": true,
+        "noUnusedLocals": true,
+        "declaration": true,
+        "outDir": "dist",
+        "removeComments": true
+    },
+    "include": ["./src/index.ts"]
+}
