@@ -52,6 +52,7 @@ the `storage` event of `windows`.
 
 ### Stringify store
 
+```svelte
 <script lang="ts">
     import { stringify } from "@eslym/svelte-utility-stores";
     // or
@@ -64,6 +65,7 @@ the `storage` event of `windows`.
 
     $inspect($token);
 </script>
+```
 
 ### JSON store
 
