@@ -67,6 +67,7 @@ the `storage` event of `windows`.
 
 ### JSON store
 
+```svelte
 <script lang="ts">
     import { json } from "@eslym/svelte-utility-stores";
     // or
@@ -77,6 +78,7 @@ the `storage` event of `windows`.
 
     $inspect($token);
 </script>
+```
 
 > [!CAUTION]
 > The `json` function is now taking a function for a fallback value instead of the value itself.
