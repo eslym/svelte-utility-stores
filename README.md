@@ -79,7 +79,7 @@ the `storage` event of `windows`.
 </script>
 
 > [!CAUTION]
-> The `json` function is now taking a function as a callback instead of the value itself.
+> The `json` function is now taking a function for a fallback value instead of the value itself.
 
 ### Masked
 
