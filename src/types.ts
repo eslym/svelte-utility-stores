@@ -26,6 +26,7 @@ export interface StringifyParse<T> {
     parse: (value: string) => T;
 }
 
-export type MutationStoreFactor<Base extends any> =
-    | (<T extends Base>(base: Writable<string | null>) => Store<T | undefined>)
-    | (<T extends Base>(base: Writable<string | null>, fallback: () => T) => Store<T>);
+export type MutationStoreFactor<Base extends any> = {
+    <T extends Base>(base: Writable<string | null>): Store<T | undefined>;
+    <T extends Base>(base: Writable<string | null>, fallback: () => T): Store<T>;
+};
