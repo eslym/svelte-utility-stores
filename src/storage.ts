@@ -34,6 +34,7 @@ function decorateStorage(
             return parent.clear.call(this);
         }
     };
+    Object.setPrototypeOf(proto, parent);
     Object.setPrototypeOf(source, proto);
     window.addEventListener('storage', (e) => {
         if (!e.storageArea || e.storageArea !== source) return;
