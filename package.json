@@ -1,6 +1,6 @@
 {
     "name": "@eslym/svelte-utility-stores",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "description": "Some utility svelte stores",
     "type": "module",
     "author": {
