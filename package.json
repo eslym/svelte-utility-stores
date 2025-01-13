@@ -1,6 +1,6 @@
 {
     "name": "@eslym/svelte-utility-stores",
-    "version": "2.0.2",
+    "version": "2.1.0",
     "description": "Some utility svelte stores",
     "type": "module",
     "author": {
@@ -44,6 +44,10 @@
         "./masked": {
             "types": "./types/masked.d.ts",
             "default": "./dist/masked.js"
+        },
+        "./reactivity": {
+            "types": "./types/reactivity.d.ts",
+            "default": "./dist/reactivity.js"
         }
     },
     "license": "MIT",

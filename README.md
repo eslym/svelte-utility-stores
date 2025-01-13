@@ -110,3 +110,27 @@ the value store is `undefined` (unchanged), useful for password input field.
     <button type="button" onclick={() => $password = undefined}>Reset</button>
 </form>
 ```
+
+### Reactivity (requires svelte >= 5.7.0)
+
+Wrap a value or svelte store into a reactive property descriptor which can be used in
+`Object.defineProperty` to create reactive object.
+
+```svelte
+<script lang="ts">
+    // can only import from "@eslym/svelte-utility-stores/reactivity"
+    import { wrapValue, wrapStore } from "@eslym/svelte-utility-stores/reactivity";
+
+    import local from "@eslym/svelte-utility-stores/local";
+
+    let obj = Object.defineProperties({}, {
+        value: wrapValue('Hello, World!'),
+        store: wrapStore(local('some-example')),
+    });
+</script>
+
+<!-- Svelte will gives warning but these will works just fine  -->
+<input type="text" bind:value={obj.value} />
+<input type="text" bind:value={obj.store} />
+
+```
