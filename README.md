@@ -134,3 +134,38 @@ Wrap a value or svelte store into a reactive property descriptor which can be us
 <input type="text" bind:value={obj.store} />
 
 ```
+
+### Reactive Storage (requires svelte >= 5.7.0)
+
+> [!IMPORTANT]
+> Reactive Storage only supports client-side rendering, so please do not import it in SSR.
+
+Make `Storage` (including `localStorage` and `sessionStorage`) into reactive in svelte.
+
+```svelte
+<script lang="ts">
+    import "@eslym/svelte-utility-stores/reactive-storage";
+
+    // use `$derived` to make the value reactive
+    let someValue = $derived(localStorage.getItem('some-value'));
+</script>
+
+<p>
+{ someValue }
+</p>
+
+<button onclick=>{() => localStorage.setItem('Hello World')}>
+    Set Hello World
+</button>
+```
+
+Or you make create a proxy for the `Storage` object.
+
+```svelte
+<script lang="ts">
+    import { storageProxy } from "@eslym/svelte-utility-stores/reactive-storage";
+
+    const local = storageProxy(localStorage);
+</script>
+<input type="text" bind:value={local.someValue} />
+```
