@@ -6,6 +6,7 @@
         "strict": true,
         "noUnusedLocals": true,
         "declaration": true,
+        "declarationDir": "dist/types",
         "outDir": "dist",
         "paths": {
             "@eslym/svelte-utility-stores/*": ["./src/*"]

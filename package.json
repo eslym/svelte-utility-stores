@@ -1,6 +1,6 @@
 {
     "name": "@eslym/svelte-utility-stores",
-    "version": "2.1.1",
+    "version": "2.1.2",
     "description": "Some utility svelte stores",
     "type": "module",
     "author": {
@@ -11,46 +11,46 @@
         "svelte"
     ],
     "scripts": {
-        "build": "rm -rf dist && tsc",
+        "build": "rm -rf dist && rollup -c",
         "format": "prettier --write ."
     },
     "exports": {
         ".": {
             "default": "./dist/index.js",
-            "types": "./types/index.d.ts"
+            "types": "./dist/index.d.ts"
         },
         "./local": {
             "node": "./dist/ssr-stores.js",
             "bun": "./dist/ssr-stores.js",
             "browser": "./dist/local.js",
             "default": "./dist/local-fallback.js",
-            "types": "./types/local.d.ts"
+            "types": "./dist/local.d.ts"
         },
         "./session": {
             "node": "./dist/ssr-stores.js",
             "bun": "./dist/ssr-stores.js",
             "browser": "./dist/session.js",
             "default": "./dist/session-fallback.js",
-            "types": "./types/session.d.ts"
+            "types": "./dist/session.d.ts"
         },
         "./stringify": {
-            "types": "./types/stringify.d.ts",
+            "types": "./dist/stringify.d.ts",
             "default": "./dist/stringify.js"
         },
         "./json": {
-            "types": "./types/json.d.ts",
+            "types": "./dist/json.d.ts",
             "default": "./dist/json.js"
         },
         "./masked": {
-            "types": "./types/masked.d.ts",
+            "types": "./dist/masked.d.ts",
             "default": "./dist/masked.js"
         },
         "./reactivity": {
-            "types": "./types/reactivity.d.ts",
+            "types": "./dist/reactivity.d.ts",
             "default": "./dist/reactivity.js"
         },
         "./reactive-storage": {
-            "types": "./types/reactive-storage.d.ts",
+            "types": "./dist/reactive-storage.d.ts",
             "default": "./dist/reactive-storage-ssr.js",
             "browser": "./dist/reactive-storage.js"
         }
@@ -60,11 +60,14 @@
         "dist/**/*"
     ],
     "devDependencies": {
-        "prettier": "^3.4.2",
-        "tslib": "^2.6.2",
-        "typescript": "^5.2.2"
+        "prettier": "^3.5.3",
+        "tslib": "^2.8.1",
+        "typescript": "^5.8.2",
+        "rollup": "^3.29.5",
+        "@rollup/plugin-typescript": "^10.0.1",
+        "rollup-plugin-dts": "^5.3.1"
     },
     "peerDependencies": {
-        "svelte": ">=4.0.0 <6.0.0"
+        "svelte": "^5.8.0"
     }
 }
