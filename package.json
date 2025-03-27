@@ -1,6 +1,6 @@
 {
     "name": "@eslym/svelte-utility-stores",
-    "version": "2.1.2",
+    "version": "2.1.3",
     "description": "Some utility svelte stores",
     "type": "module",
     "author": {
@@ -51,8 +51,10 @@
         },
         "./reactive-storage": {
             "types": "./dist/reactive-storage.d.ts",
-            "default": "./dist/reactive-storage-ssr.js",
-            "browser": "./dist/reactive-storage.js"
+            "default": "./dist/reactive-storage.js",
+            "browser": "./dist/reactive-storage-csr.js",
+            "node": "./dist/reactive-storage-ssr.js",
+            "bun": "./dist/reactive-storage-ssr.js"
         }
     },
     "license": "MIT",
