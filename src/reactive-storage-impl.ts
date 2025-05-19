@@ -1,9 +1,18 @@
 import { createSubscriber } from 'svelte/reactivity';
+import type { ReactiveStorageEvent } from './reactive-storage-ssr';
 
 export function create_hooks() {
     const notifiers = new Map<Storage, Map<string, () => void>>();
     const subscribers = new Map<Storage, Map<string, () => void>>();
     const proxies = new Map<Storage, Record<string, string | null>>();
+
+    const listeners = new WeakMap<
+        Storage,
+        {
+            set: Set<(ev: ReactiveStorageEvent) => void>;
+            update: Set<(ev: ReactiveStorageEvent) => void>;
+        }
+    >();
 
     const orig = {
         getItem: Storage.prototype.getItem,
@@ -11,6 +20,14 @@ export function create_hooks() {
         removeItem: Storage.prototype.removeItem,
         clear: Storage.prototype.clear
     };
+
+    function get_keys(storage: Storage): string[] {
+        const keys = [];
+        for (let i = 0; i < storage.length; i++) {
+            keys.push(storage.key(i)!);
+        }
+        return keys;
+    }
 
     function get_notifiers_map(storage: Storage): Map<string, () => void> {
         if (!notifiers.has(storage)) {
@@ -47,6 +64,18 @@ export function create_hooks() {
         if (old === value) return;
         orig.setItem.call(this, key, value);
         notifiers.get(this)?.get(key)?.();
+        if (listeners.has(this)) {
+            const callbacks = listeners.get(this)!.set;
+            const event: ReactiveStorageEvent = Object.freeze({
+                type: 'set',
+                storage: this,
+                key,
+                value
+            });
+            for (const callback of callbacks) {
+                callback(event);
+            }
+        }
     };
 
     Storage.prototype.removeItem = function (key) {
@@ -56,12 +85,39 @@ export function create_hooks() {
         if (notifiers.has(this)) {
             notifiers.get(this)?.get(key)?.();
         }
+        if (listeners.has(this)) {
+            const callbacks = listeners.get(this)!.set;
+            const event: ReactiveStorageEvent = Object.freeze({
+                type: 'set',
+                storage: this,
+                key,
+                value: null
+            });
+            for (const callback of callbacks) {
+                callback(event);
+            }
+        }
     };
 
-    Storage.prototype.clear = function () {
+    Storage.prototype.clear = function (this: Storage) {
+        const keys = get_keys(this);
         orig.clear.call(this);
         if (notifiers.has(this)) {
             notifiers.get(this)?.forEach((update) => update());
+        }
+        if (listeners.has(this)) {
+            const callbacks = listeners.get(this)!.set;
+            for (const key of keys) {
+                const event: ReactiveStorageEvent = Object.freeze({
+                    type: 'set',
+                    storage: this,
+                    key,
+                    value: null
+                });
+                for (const callback of callbacks) {
+                    callback(event);
+                }
+            }
         }
     };
 
@@ -69,8 +125,35 @@ export function create_hooks() {
         if (!event.storageArea) return;
         if (event.key) {
             notifiers.get(event.storageArea)?.get(event.key)?.();
+            if (listeners.has(event.storageArea)) {
+                const callbacks = listeners.get(event.storageArea)!.update;
+                const ev: ReactiveStorageEvent = Object.freeze({
+                    type: 'update',
+                    storage: event.storageArea,
+                    key: event.key,
+                    value: event.newValue
+                });
+                for (const callback of callbacks) {
+                    callback(ev);
+                }
+            }
         } else {
+            const keys = get_keys(event.storageArea);
             notifiers.get(event.storageArea)?.forEach((update) => update());
+            if (listeners.has(event.storageArea)) {
+                const callbacks = listeners.get(event.storageArea)!.update;
+                for (const key of keys) {
+                    const ev: ReactiveStorageEvent = Object.freeze({
+                        type: 'update',
+                        storage: event.storageArea,
+                        key,
+                        value: null
+                    });
+                    for (const callback of callbacks) {
+                        callback(ev);
+                    }
+                }
+            }
         }
     });
 
@@ -160,5 +243,25 @@ export function create_hooks() {
         return proxy;
     }
 
-    return { storageDescriptor, storageProxy };
+    function onStorageSet(storage: Storage, callback: (ev: ReactiveStorageEvent) => void) {
+        if (!listeners.has(storage)) {
+            listeners.set(storage, { set: new Set(), update: new Set() });
+        }
+        listeners.get(storage)!.set.add(callback);
+        return () => {
+            listeners.get(storage)!.set.delete(callback);
+        };
+    }
+
+    function onStorageUpdate(storage: Storage, callback: (ev: ReactiveStorageEvent) => void) {
+        if (!listeners.has(storage)) {
+            listeners.set(storage, { set: new Set(), update: new Set() });
+        }
+        listeners.get(storage)!.update.add(callback);
+        return () => {
+            listeners.get(storage)!.update.delete(callback);
+        };
+    }
+
+    return { storageDescriptor, storageProxy, onStorageSet, onStorageUpdate };
 }

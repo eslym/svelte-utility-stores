@@ -1,5 +1,5 @@
 import { create_hooks } from './reactive-storage-impl';
 
-const { storageDescriptor, storageProxy } = create_hooks();
+const { storageDescriptor, storageProxy, onStorageSet, onStorageUpdate } = create_hooks();
 
-export { storageDescriptor, storageProxy };
+export { storageDescriptor, storageProxy, onStorageSet, onStorageUpdate };
